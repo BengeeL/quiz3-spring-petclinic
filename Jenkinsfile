@@ -26,11 +26,9 @@ pipeline {
         stage('JaCoCo Report') {
             steps {
                 jacoco(
-                    execPattern: '**/jacoco.exec',
-                    classPattern: '**/classes',
-                    sourcePattern: '**/src/main/java',
-                    classDirectories: [[pattern: '**/classes']],
-                    sourceDirectories: [[pattern: '**/src/main/java']]
+                    execPattern: '**/target/jacoco.exec',
+                    classPattern: '**/target/classes',
+                    sourcePattern: '**/src/main/java'
                 )
             }
         }
@@ -38,7 +36,11 @@ pipeline {
 
     post {
         always {
-            jacoco()
+            jacoco(
+                execPattern: '**/target/jacoco.exec',
+                classPattern: '**/target/classes',
+                sourcePattern: '**/src/main/java'
+            )
         }
     }
 
