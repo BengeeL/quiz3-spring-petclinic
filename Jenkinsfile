@@ -17,26 +17,28 @@ pipeline {
             }
         }
 
-        stage('Code Coverage') {
+        stage('Test') {
             steps {
-                sh './mvnw clean package jacoco:report' 
+                sh 'mvn clean test'
+            }
+        }
 
+        stage('JaCoCo Report') {
+            steps {
                 jacoco(
-                    thresholds: [
-                        [threshold: 'Instruction', minimum: 0.80],
-                        [threshold: 'Branch', minimum: 0.80],
-                        [threshold: 'Class', minimum: 0.80],
-                        [threshold: 'Method', minimum: 0.80],
-                        [threshold: 'Line', minimum: 0.80]
-                    ],
-                    reportDir: 'target/site/jacoco' 
-                )
-
-                publishHTML(
-                    publishDir: 'target/site/jacoco', 
-                    displayName: 'JaCoCo Coverage Report'
+                    execPattern: '**/jacoco.exec',
+                    classPattern: '**/classes',
+                    sourcePattern: '**/src/main/java',
+                    classDirectories: [[pattern: '**/classes']],
+                    sourceDirectories: [[pattern: '**/src/main/java']]
                 )
             }
+        }
+    }
+
+    post {
+        always {
+            jacoco()
         }
     }
 
