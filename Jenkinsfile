@@ -19,9 +19,23 @@ pipeline {
 
         stage('Code Coverage') {
             steps {
-                sh 'mvn clean package jacoco:report'
-                jacoco threshold: [instruction: 0.80, branch: 0.80, class: 0.80, method: 0.80, line: 0.80]
-                publishHTML(targetDir: 'target/site/jacoco', reportName: 'JaCoCo Coverage Report')
+                sh './mvnw clean package jacoco:report' 
+
+                jacoco(
+                    thresholds: [
+                        [threshold: 'Instruction', minimum: 0.80],
+                        [threshold: 'Branch', minimum: 0.80],
+                        [threshold: 'Class', minimum: 0.80],
+                        [threshold: 'Method', minimum: 0.80],
+                        [threshold: 'Line', minimum: 0.80]
+                    ],
+                    reportDir: 'target/site/jacoco' 
+                )
+
+                publishHTML(
+                    publishDir: 'target/site/jacoco', 
+                    displayName: 'JaCoCo Coverage Report'
+                )
             }
         }
     }
